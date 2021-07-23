@@ -1,5 +1,5 @@
-const { Schema } = require('mongoose');
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const videoSchema = mongoose.Schema(
   {
@@ -20,9 +20,7 @@ const videoSchema = mongoose.Schema(
     filePath: {
       type: String,
     },
-    category: {
-      type: String,
-    },
+    catogory: String,
     views: {
       type: Number,
       default: 0,

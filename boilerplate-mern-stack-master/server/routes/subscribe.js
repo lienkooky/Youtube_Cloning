@@ -1,47 +1,56 @@
 const express = require('express');
 const router = express.Router();
-const { subscriber } = require('../models/subscriber');
+
+const { Subscriber } = require('../models/Subscriber');
+
+const { auth } = require('../middleware/auth');
 
 //=================================
 //             Subscribe
 //=================================
 
 router.post('/subscribeNumber', (req, res) => {
-  subscriber.find({ userTo: req.body.userTo }).exec((err, subscribe) => {
+  Subscriber.find({ userTo: req.body.userTo }).exec((err, subscribe) => {
     if (err) return res.status(400).send(err);
-    return res
-      .status(200)
-      .json({ success: true, subscribeNumber: subscribe.length });
+
+    res.status(200).json({ success: true, subscribeNumber: subscribe.length });
   });
 });
 
 router.post('/subscribed', (req, res) => {
-  subscriber
-    .find({ userTo: req.body.userTo, userForm: req.body.userForm })
-    .exec((err, subscribe) => {
-      if (err) return res.status(400).send(err);
-      let result = false;
-      if (subscribe.length !== 0) {
-        result = true;
-      }
-      res.status(200).json({ success: true, subscirbed: result });
-    });
-});
+  Subscriber.find({
+    userTo: req.body.userTo,
+    userFrom: req.body.userFrom,
+  }).exec((err, subscribe) => {
+    if (err) return res.status(400).send(err);
 
-router.post('/unsubscribe', (req, res) => {
-  subscriber
-    .findOneAndDelete({ userTo: req.body.userTo, userForm: req.body.userForm })
-    .exec((err, res) => {
-      if (err) return res.status(200).send({ success: false, err });
-      res.status(200).json({ success: true, doc });
-    });
+    let result = false;
+    if (subscribe.length !== 0) {
+      result = true;
+    }
+
+    res.status(200).json({ success: true, subcribed: result });
+  });
 });
 
 router.post('/subscribe', (req, res) => {
-  const subscribe = new subscriber(req.body);
+  const subscribe = new Subscriber(req.body);
+
   subscribe.save((err, doc) => {
     if (err) return res.json({ success: false, err });
-    res.status(200).json({ success: true });
+    return res.status(200).json({ success: true });
+  });
+});
+
+router.post('/unSubscribe', (req, res) => {
+  console.log(req.body);
+
+  Subscriber.findOneAndDelete({
+    userTo: req.body.userTo,
+    userFrom: req.body.userFrom,
+  }).exec((err, doc) => {
+    if (err) return res.status(400).json({ success: false, err });
+    res.status(200).json({ success: true, doc });
   });
 });
 
