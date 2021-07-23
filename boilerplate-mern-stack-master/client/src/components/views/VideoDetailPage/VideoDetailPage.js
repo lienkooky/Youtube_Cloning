@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react'
 import {Row, Col, List, Avator} from 'antd'
 import Axios from 'axios'
 import SideVideo from './Section/SideVideo'
+import { Subscribe } from './Section/Subscribe'
+import { Video } from '../../../../../server/models/Video'
 
 function VideoDetailPage(props){
 
@@ -25,7 +27,7 @@ function VideoDetailPage(props){
             <Col lg={18} xs={24}>
                 <div style={{width: `100%`, padding='3rem 4rem'}}>
                     <video style={{width:'100%'}} src={`http://localhost:5000/${videoDetail.filePath}`} controls />
-                    <List.Item actions>
+                    <List.Item actions={<Subscribe userTo={Video.wirter._id} onClick={localStorage.getItem('userTo')} />}>
                         <List.Item.Meta avator={<Avator src={videoDetail.writer.image} />} title={videoDetail.writer.title} description={videoDetail.writer.description} />
                     </List.Item>
                 </div>
